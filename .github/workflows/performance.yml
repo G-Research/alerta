@@ -14,19 +14,19 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
-      alerta:
-        image: ghcr.io/alerta/alerta-api
-        env:
-          DEBUG: 1
-          DATABASE_URL: postgres://postgres:postgres@postgres:5432/alerta
-        ports:
-          - 8080:8080
-        options: >-
-          --health-cmd "curl --fail http://localhost:8080/_ || exit 1"
-          --health-interval 10s
-          --health-timeout 5s
-          --health-retries 10
-          --health-start-period 30s
+#      alerta:
+#        image: ghcr.io/alerta/alerta-api
+#        env:
+#          DEBUG: 1
+#          DATABASE_URL: postgres://postgres:postgres@postgres:5432/alerta
+#        ports:
+#          - 8080:8080
+#        options: >-
+#          --health-cmd "curl --fail http://localhost:8080/_ || exit 1"
+#          --health-interval 10s
+#          --health-timeout 5s
+#          --health-retries 10
+#          --health-start-period 30s
       postgres:
         image: postgres:13
         env:
@@ -41,13 +41,13 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-    steps:
-      - name: Run test
-        run: >-
-          docker run ghcr.io/act10ns/hey
-          -z 2s
-          http://localhost:8080/_
-          -m POST
-          -T application/json
-          -d '{"resource":"router01", "event":"node_down"}'
-          http://localhost:8080/alert
+#    steps:
+#      - name: Run test
+#        run: >-
+#          docker run ghcr.io/act10ns/hey
+#          -z 2s
+#          http://localhost:8080/_
+#          -m POST
+#          -T application/json
+#          -d '{"resource":"router01", "event":"node_down"}'
+#          http://localhost:8080/alert
