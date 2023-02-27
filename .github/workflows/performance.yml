@@ -44,10 +44,9 @@ jobs:
     steps:
       - name: Run test
         run: >-
-          echo "test"
-#          docker run ghcr.io/act10ns/hey
-#          -z 2s
-#          http://localhost:8080/_
+          docker run ghcr.io/act10ns/hey
+          -z 2s
+          http://localhost:8080/_
 #          -m POST
 #          -T application/json
 #          -d '{"resource":"router01", "event":"node_down"}'
