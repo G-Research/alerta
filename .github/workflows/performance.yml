@@ -41,9 +41,10 @@ jobs:
           --health-timeout 5s
           --health-retries 5
 
-#    steps:
-#      - name: Run test
-#        run: >-
+    steps:
+      - name: Run test
+        run: >-
+          echo "test"
 #          docker run ghcr.io/act10ns/hey
 #          -z 2s
 #          http://localhost:8080/_
