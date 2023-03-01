@@ -18,14 +18,18 @@ jobs:
     steps:
       - name: Checkout
         uses: actions/checkout@v3
+      - id: string
+        uses: ASzc/change-string-case-action@v2
+        with:
+          string: $REPOSITORY_URL
       - name: Build image
         id: docker-build
         run: >-
           docker build
           -t $IMAGE_NAME
-          -t $REPOSITORY_URL/$IMAGE_NAME:$(cat VERSION)
-          -t $REPOSITORY_URL/$IMAGE_NAME:$(git rev-parse --short HEAD)
-          -t $REPOSITORY_URL/$IMAGE_NAME:latest .
+          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:$(cat VERSION)
+          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:$(git rev-parse --short HEAD)
+          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:latest .
       - name: Docker Login
         uses: docker/login-action@v2
         with:
@@ -34,7 +38,7 @@ jobs:
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Image
         id: docker-push
-        run: docker push --all-tags $REPOSITORY_URL/$IMAGE_NAME
+        run: docker push --all-tags ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME
 
       - uses: act10ns/slack@v2
         with:
