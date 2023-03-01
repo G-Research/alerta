@@ -21,7 +21,7 @@ jobs:
       - id: string
         uses: ASzc/change-string-case-action@v2
         with:
-          string: ${{ $REPOSITORY_URL }}
+          string: ${{ REPOSITORY_URL }}
       - name: Build image
         id: docker-build
         run: >-
