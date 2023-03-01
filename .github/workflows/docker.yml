@@ -2,7 +2,7 @@ name: Docker
 
 on:
   push:
-    branches: [ master, release/*, gr-main* ]
+    branches: [ master, release/* ]
     tags: [ '**' ]
 
 env:
@@ -17,30 +17,33 @@ jobs:
       IMAGE_NAME: ${{ github.repository_owner }}/alerta-api
     steps:
       - name: Checkout
-        uses: actions/checkout@v3
+        uses: actions/checkout@v2
+      - name: Variables
+        id: vars
+        run: echo "::set-output name=SHORT_COMMIT_ID::$(git rev-parse --short HEAD)"
       - id: string
         uses: ASzc/change-string-case-action@v2
         with:
-          string: ${{ env.REPOSITORY_URL }}
+          string: ${{ env.IMAGE_NAME }}
       - name: Build image
         id: docker-build
         run: >-
           docker build
-          -t $IMAGE_NAME
-          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:$(cat VERSION)
-          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:$(git rev-parse --short HEAD)
-          -t ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME:latest .
+          -t ${{ steps.string.outputs.lowercase }}
+          -t $REPOSITORY_URL/${{ steps.string.outputs.lowercase }}:$(cat VERSION)
+          -t $REPOSITORY_URL/${{ steps.string.outputs.lowercase }}:${{ steps.vars.outputs.SHORT_COMMIT_ID }}
+          -t $REPOSITORY_URL/${{ steps.string.outputs.lowercase }}:latest .
       - name: Docker Login
-        uses: docker/login-action@v2
+        uses: docker/login-action@v1
         with:
           registry: ${{ env.REPOSITORY_URL }}
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
       - name: Publish Image
         id: docker-push
-        run: docker push --all-tags ${{ steps.string.outputs.lowercase }}/$IMAGE_NAME
+        run: docker push --all-tags $REPOSITORY_URL/${{ steps.string.outputs.lowercase }}
 
-      - uses: act10ns/slack@v2
+      - uses: act10ns/slack@v1
         with:
           status: ${{ job.status }}
           steps: ${{ toJson(steps) }}
