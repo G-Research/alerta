@@ -693,3 +693,4 @@ class Alert:
 
     def from_timeout(self, text: str = '', timeout: int = None):
         return self.from_action(action='timeout', text=text, timeout=timeout)
+
